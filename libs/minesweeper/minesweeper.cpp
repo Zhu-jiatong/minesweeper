@@ -20,27 +20,49 @@ void minesweeper::operate(int col, int ln, int mov)
     system("cls");
     if (mine > flags)
     {
-        if (!checkThisMine(col, ln))
+        switch (mov)
         {
-            if (checkRoundMine(col, ln) != 0)
+        case OPEN:
+            if (coverBoard[ln][col] != '#')
             {
-                coverBoard[ln][col] = '0' + checkRoundMine(col, ln);
-            }
-            else
-            {
-                coverBoard[ln][col] = ' ';
-                for (int i = 0; i < 8; ++i)
+                if (!checkThisMine(col, ln))
                 {
-                    if (!mineBoard[ln + sides[i][0]][col + sides[i][1]] && coverBoard[ln + sides[i][0]][col + sides[i][1]] == '+')
+                    if (checkRoundMine(col, ln) != 0)
                     {
-                        operate(col + sides[i][1], ln + sides[i][0], OPEN);
+                        coverBoard[ln][col] = '0' + checkRoundMine(col, ln);
+                    }
+                    else
+                    {
+                        coverBoard[ln][col] = ' ';
+                        for (int i = 0; i < 8; ++i)
+                        {
+                            if (!mineBoard[ln + sides[i][0]][col + sides[i][1]] && coverBoard[ln + sides[i][0]][col + sides[i][1]] == '+')
+                            {
+                                operate(col + sides[i][1], ln + sides[i][0], OPEN);
+                            }
+                        }
                     }
                 }
+                else
+                {
+                    lose();
+                }
             }
-        }
-        else
-        {
-            lose();
+            break;
+
+        case FLAG:
+            if (coverBoard[ln][col] == '+')
+            {
+                coverBoard[ln][col] = '#';
+            }
+            else if (coverBoard[ln][col] == '#')
+            {
+                coverBoard[ln][col] = '+';
+            }
+            break;
+
+        default:
+            break;
         }
         showBoard();
     }
