@@ -11,7 +11,6 @@ void minesweeper::setBoard(int diffi)
             coverBoard[y][x] = '+';
         }
     }
-    cout << "Initialising board\n";
     generate();
     showBoard();
 }
@@ -23,23 +22,26 @@ void minesweeper::operate(int col, int ln, int mov)
     {
         if (!checkThisMine(col, ln))
         {
-            cout << mineBoard[ln][col];
             if (checkRoundMine(col, ln) != 0)
             {
-                cout << "alert";
                 coverBoard[ln][col] = '0' + checkRoundMine(col, ln);
             }
             else
             {
                 coverBoard[ln][col] = ' ';
-                // operate(col, ln, OPEN);
+                for (int i = 0; i < 8; ++i)
+                {
+                    if (!mineBoard[ln + sides[i][0]][col + sides[i][1]] && coverBoard[ln + sides[i][0]][col + sides[i][1]] == '+')
+                    {
+                        operate(col + sides[i][1], ln + sides[i][0], OPEN);
+                    }
+                }
             }
         }
         else
         {
             lose();
         }
-        cout << "hello";
         showBoard();
     }
     else
@@ -65,7 +67,7 @@ int minesweeper::checkRoundMine(int col, int ln)
         mCount += (boardCol < col && boardLn > ln) ? (mineBoard[ln + 1][col - 1] ? 1 : 0) : 0;
         mCount += (boardCol < col && boardLn < ln) ? (mineBoard[ln - 1][col - 1] ? 1 : 0) : 0;
      */
-    for (int i = 0; i <= 8; ++i)
+    for (int i = 0; i < 8; ++i)
     {
         if (mineBoard[ln + sides[i][0]][col + sides[i][1]])
         {
@@ -78,13 +80,8 @@ int minesweeper::checkRoundMine(int col, int ln)
 
 void minesweeper::generate()
 {
-    srand(time(NULL));
     for (int placed = 0; placed < mine; ++placed)
     {
-        /*         int random = rand() % (boardCol * boardLn);
-                int pLn = random / (boardLn + 1);
-                int pCol = random % (boardCol + 1);
-         */
         random_device rdLn;
         mt19937 mtLn(rdLn());
         uniform_int_distribution<int> randLn(0, boardLn - 1);
@@ -96,14 +93,11 @@ void minesweeper::generate()
         if (mineBoard[pLn][pCol])
         {
             --placed;
-            srand(pLn);
-            cout << "Repeated mine" << placed << '\n';
             continue;
         }
         else
         {
             mineBoard[pLn][pCol] = true;
-            cout << "Placed 1 mine\n";
         }
     }
 }
@@ -137,7 +131,7 @@ void minesweeper::showBoard()
         cout << '\n';
         for (int x = 0; x < boardCol; ++x)
         {
-            cout << mineBoard[y][x] << "  ";
+            cout << coverBoard[y][x] << "  ";
         }
         cout << "| " << y << '\n';
     }
@@ -183,4 +177,9 @@ void minesweeper::init()
     coverBoard.fill(coverBoard[0]);
     generate();
     showBoard();
+}
+
+void minesweeper::openSides(int col, int ln)
+{
+    coverBoard[ln][col] = ' ';
 }

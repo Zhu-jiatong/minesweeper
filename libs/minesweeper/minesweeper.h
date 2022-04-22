@@ -20,7 +20,8 @@ enum mode
 enum moves
 {
     FLAG,
-    OPEN
+    OPEN,
+    AUTOS,
 };
 
 using namespace std;
