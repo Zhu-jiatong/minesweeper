@@ -81,12 +81,22 @@ void minesweeper::generate()
     srand(time(NULL));
     for (int placed = 0; placed < mine; ++placed)
     {
-        int random = rand() % (boardCol * boardLn);
-        int pLn = random / (boardLn + 1);
-        int pCol = random % (boardCol + 1);
+        /*         int random = rand() % (boardCol * boardLn);
+                int pLn = random / (boardLn + 1);
+                int pCol = random % (boardCol + 1);
+         */
+        random_device rdLn;
+        mt19937 mtLn(rdLn());
+        uniform_int_distribution<int> randLn(0, boardLn - 1);
+        random_device rdCol;
+        mt19937 mtCol(rdCol());
+        uniform_int_distribution<int> randCol(0, boardCol - 1);
+        int pLn = randLn(mtLn);
+        int pCol = randCol(mtCol);
         if (mineBoard[pLn][pCol])
         {
             --placed;
+            srand(pLn);
             cout << "Repeated mine" << placed << '\n';
             continue;
         }
@@ -113,40 +123,23 @@ void minesweeper::showBoard()
     system("cls");
 
     bool firstLn(true);
-    /*     for (int y = 0; y <= boardLn; ++y)
+    for (int y = 0; y < boardLn; ++y)
+    {
+        if (firstLn)
         {
-            for (int i = 0; i <= boardCol && firstLn; ++i)
+            for (int x = 0; x < boardCol; ++x)
             {
-                cout << i << (i < 10 ? "  " : " ");
+                cout << x << (x < 10 ? "  " : " ");
             }
             firstLn = false;
-
-            cout << '\n';
-
-            for (int x = 0; x <= boardCol; ++x)
-            {
-                cout << coverBoard[y][x] << "  ";
-            }
-            cout << "| " << y << '\n';
         }
-     */
-    int y(0);
-    for (auto &&thisLn : coverBoard)
-    {
-        int x(0);
-        for (auto &&thisCol : coverBoard[0])
-        {
-            cout << ++x << (x < 10 ? "  " : " ");
-        }
-        firstLn = false;
-        x = 0;
 
         cout << '\n';
-        for (auto &&thisCol : coverBoard[x])
+        for (int x = 0; x < boardCol; ++x)
         {
-            cout << thisCol << "  ";
+            cout << mineBoard[y][x] << "  ";
         }
-        cout << "| " << ++y << '\n';
+        cout << "| " << y << '\n';
     }
 
     cout << "0 - FLAG\n"

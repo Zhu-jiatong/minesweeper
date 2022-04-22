@@ -5,6 +5,7 @@
 #include <chrono>
 #include <array>
 #include <time.h>
+#include <random>
 
 #define MAXLN 16
 #define MAXCOL 30
