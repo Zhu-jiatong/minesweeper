@@ -8,7 +8,7 @@ void minesweeper::operate(int col, int ln, int mov)
         switch (mov)
         {
         case OPEN:
-            if (coverBoard.at(ln).at(col) == '+')
+            if (coverBoard.at(ln).at(col) == '.')
             {
                 if (!mineBoard.at(ln).at(col))
                 {
@@ -24,19 +24,18 @@ void minesweeper::operate(int col, int ln, int mov)
                 {
                     lose();
                 }
-                
             }
             break;
 
         case FLAG:
-            if (coverBoard.at(ln).at(col) == '+')
+            if (coverBoard.at(ln).at(col) == '.')
             {
                 coverBoard.at(ln).at(col) = '#';
                 ++flags;
             }
             else if (coverBoard.at(ln).at(col) == '#')
             {
-                coverBoard.at(ln).at(col) = '+';
+                coverBoard.at(ln).at(col) = '.';
                 --flags;
             }
 
@@ -120,8 +119,7 @@ void minesweeper::lose()
 void minesweeper::showBoard()
 {
     system("cls");
-
-    bool firstLn(true);
+    cout << "    ";
     for (int x = 0; x < coverBoard.at(0).size(); ++x)
     {
         cout << x << (x < 10 ? "  " : " ");
@@ -129,17 +127,13 @@ void minesweeper::showBoard()
 
     for (int y = 0; y < coverBoard.size(); ++y)
     {
-        if (firstLn)
-        {
-            firstLn = false;
-        }
-
-        cout << '\n';
+        cout << '\n'
+             << (y < 10 ? " " : "") << y << "| ";
         for (int x = 0; x < coverBoard.at(y).size(); ++x)
         {
             cout << coverBoard.at(y).at(x) << "  ";
         }
-        cout << "| " << y << '\n';
+        cout << '\n';
     }
 
     cout << "0 - FLAG (" << flags << "/" << mine << ")\n"
@@ -184,7 +178,7 @@ void minesweeper::init()
     {
         for (int x = 0; x < boardCol; ++x)
         {
-            coverBoard.at(y).push_back('+');
+            coverBoard.at(y).push_back('.');
         }
     }
 
@@ -200,7 +194,7 @@ void minesweeper::init()
 
 void minesweeper::openSides(int col, int ln)
 {
-    if (isValid(col, ln) && coverBoard.at(ln).at(col) == '+')
+    if (isValid(col, ln) && coverBoard.at(ln).at(col) == '.')
     {
         coverBoard.at(ln).at(col) = (countRoundMine(col, ln) == 0) ? (' ') : ('0' + countRoundMine(col, ln));
         ++opened;
