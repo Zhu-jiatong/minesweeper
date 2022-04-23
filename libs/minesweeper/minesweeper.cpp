@@ -132,7 +132,7 @@ void minesweeper::showBoard()
         cout << '\n';
         for (int x = 0; x < coverBoard.at(y).size(); ++x)
         {
-            cout << mineBoard.at(y).at(x) << "  ";
+            cout << coverBoard.at(y).at(x) << "  ";
         }
         cout << "| " << y << '\n';
     }
