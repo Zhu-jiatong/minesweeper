@@ -1,45 +1,25 @@
 #include "minesweeper.h"
 
-void minesweeper::setBoard(int diffi)
-{
-    system("cls");
-
-    for (int y = 0; y <= boardLn; ++y)
-    {
-        for (int x = 0; x <= boardCol; ++x)
-        {
-            coverBoard[y][x] = '+';
-        }
-    }
-    generate();
-    showBoard();
-}
-
 void minesweeper::operate(int col, int ln, int mov)
 {
     system("cls");
-    if (mine > flags)
+    if (isValid(col, ln))
     {
         switch (mov)
         {
         case OPEN:
-            if (coverBoard[ln][col] != '#')
+            if (coverBoard.at(ln).at(col) == '+')
             {
-                if (!checkThisMine(col, ln))
+                if (!mineBoard.at(ln).at(col))
                 {
-                    if (checkRoundMine(col, ln) != 0)
+                    coverBoard.at(ln).at(col) = (countRoundMine(col, ln) == 0) ? (' ') : ('0' + countRoundMine(col, ln));
+                    ++opened;
+                    if (!countRoundMine(col, ln))
                     {
-                        coverBoard[ln][col] = '0' + checkRoundMine(col, ln);
-                    }
-                    else
-                    {
-                        coverBoard[ln][col] = ' ';
-                        for (int i = 0; i < 8; ++i)
+                        for (auto &&calc : sides)
                         {
-                            if (!mineBoard[ln + sides[i][0]][col + sides[i][1]] && coverBoard[ln + sides[i][0]][col + sides[i][1]] == '+')
-                            {
-                                operate(col + sides[i][1], ln + sides[i][0], OPEN);
-                            }
+                            int calcLn = ln + calc[0], calcCol = col + calc[1];
+                            openSides(calcCol, calcLn);
                         }
                     }
                 }
@@ -51,47 +31,44 @@ void minesweeper::operate(int col, int ln, int mov)
             break;
 
         case FLAG:
-            if (coverBoard[ln][col] == '+')
+            if (coverBoard.at(ln).at(col) == '+')
             {
-                coverBoard[ln][col] = '#';
+                coverBoard.at(ln).at(col) = '#';
+                ++flags;
             }
-            else if (coverBoard[ln][col] == '#')
+            else if (coverBoard.at(ln).at(col) == '#')
             {
-                coverBoard[ln][col] = '+';
+                coverBoard.at(ln).at(col) = '+';
+                --flags;
             }
+
             break;
 
         default:
             break;
         }
-        showBoard();
     }
     else
     {
+        cout << "invalid move\n";
+        system("pause");
+    }
+
+    if (opened >= boardCol * boardLn - mine)
+    {
         win();
     }
+
+    showBoard();
 }
 
-bool minesweeper::checkThisMine(int col, int ln)
-{
-    return mineBoard[ln][col] ? true : false;
-}
-
-int minesweeper::checkRoundMine(int col, int ln)
+int minesweeper::countRoundMine(int col, int ln)
 {
     int mCount{};
-    /*     mCount += (boardCol > col) ? (mineBoard[ln][col + 1] ? 1 : 0) : 0;
-        mCount += (boardCol > col && boardLn > ln) ? (mineBoard[ln + 1][col + 1] ? 1 : 0) : 0;
-        mCount += (boardCol > col && boardLn < ln) ? (mineBoard[ln - 1][col + 1] ? 1 : 0) : 0;
-        mCount += (boardLn > ln) ? (mineBoard[ln + 1][col] ? 1 : 0) : 0;
-        mCount += (boardLn < ln) ? (mineBoard[ln - 1][col] ? 1 : 0) : 0;
-        mCount += (boardCol < col) ? (mineBoard[ln][col - 1] ? 1 : 0) : 0;
-        mCount += (boardCol < col && boardLn > ln) ? (mineBoard[ln + 1][col - 1] ? 1 : 0) : 0;
-        mCount += (boardCol < col && boardLn < ln) ? (mineBoard[ln - 1][col - 1] ? 1 : 0) : 0;
-     */
     for (int i = 0; i < 8; ++i)
     {
-        if (mineBoard[ln + sides[i][0]][col + sides[i][1]])
+        int checkLn = ln + sides[i][0], checkCol = col + sides[i][1];
+        if (isValid(checkCol, checkLn) && mineBoard[checkLn][checkCol])
         {
             ++mCount;
         }
@@ -100,9 +77,14 @@ int minesweeper::checkRoundMine(int col, int ln)
     return mCount;
 }
 
-void minesweeper::generate()
+bool minesweeper::isValid(int col, int ln)
 {
-    for (int placed = 0; placed < mine; ++placed)
+    return (col >= 0 && col < boardCol && ln >= 0 && ln < boardLn) ? true : false;
+}
+
+void minesweeper::generate(int num)
+{
+    for (int placed = 0; placed <= num; ++placed)
     {
         random_device rdLn;
         mt19937 mtLn(rdLn());
@@ -112,26 +94,29 @@ void minesweeper::generate()
         uniform_int_distribution<int> randCol(0, boardCol - 1);
         int pLn = randLn(mtLn);
         int pCol = randCol(mtCol);
-        if (mineBoard[pLn][pCol])
+
+        if (mineBoard.at(pLn).at(pCol))
         {
             --placed;
             continue;
         }
         else
         {
-            mineBoard[pLn][pCol] = true;
+            mineBoard.at(pLn).at(pCol) = true;
         }
     }
 }
 
 void minesweeper::win()
 {
-    cout << "win";
+    cout << "You WIN :)\nPress \"Enter\" to continue...";
+    system("pause");
 }
 
 void minesweeper::lose()
 {
-    cout << "lose";
+    cout << "You LOSE :)\nPress \"Enter\" to continue...";
+    system("pause");
 }
 
 void minesweeper::showBoard()
@@ -139,28 +124,29 @@ void minesweeper::showBoard()
     system("cls");
 
     bool firstLn(true);
-    for (int y = 0; y < boardLn; ++y)
+    for (int x = 0; x < coverBoard.at(0).size(); ++x)
+    {
+        cout << x << (x < 10 ? "  " : " ");
+    }
+
+    for (int y = 0; y < coverBoard.size(); ++y)
     {
         if (firstLn)
         {
-            for (int x = 0; x < boardCol; ++x)
-            {
-                cout << x << (x < 10 ? "  " : " ");
-            }
             firstLn = false;
         }
 
         cout << '\n';
-        for (int x = 0; x < boardCol; ++x)
+        for (int x = 0; x < coverBoard.at(y).size(); ++x)
         {
-            cout << coverBoard[y][x] << "  ";
+            cout << coverBoard.at(y).at(x) << "  ";
         }
         cout << "| " << y << '\n';
     }
 
-    cout << "0 - FLAG\n"
-         << "1 - OPEN\n"
-         << "YOUR_MOVE (col ln mov): ";
+    cout << "0 - FLAG (" << flags << "/" << mine << ")\n"
+         << "1 - OPEN (" << opened << "/" << boardCol * boardLn - mine << ")\n"
+         << "YOUR_MOVE (x y mov): ";
     int c, l, m;
     cin >> c >> l >> m;
     operate(c, l, m);
@@ -195,13 +181,30 @@ void minesweeper::setAttrib(int dif)
 
 void minesweeper::init()
 {
-    coverBoard[0].fill('+');
-    coverBoard.fill(coverBoard[0]);
-    generate();
+    coverBoard.resize(boardLn); // initialise the cover layer board.
+    for (int y = 0; y < boardLn; ++y)
+    {
+        for (int x = 0; x < boardCol; ++x)
+        {
+            coverBoard.at(y).push_back('+');
+        }
+    }
+
+    mineBoard.resize(boardLn); // initialise the mine layer board
+    for (auto &&mineBoardY : mineBoard)
+    {
+        mineBoardY.resize(boardCol);
+    }
+
+    generate(mine);
     showBoard();
 }
 
 void minesweeper::openSides(int col, int ln)
 {
-    coverBoard[ln][col] = ' ';
+    if (isValid(col, ln))
+    {
+        coverBoard.at(ln).at(col) = (countRoundMine(col, ln) == 0) ? (' ') : ('0' + countRoundMine(col, ln));
+        ++opened;
+    }
 }
