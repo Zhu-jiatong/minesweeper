@@ -12,20 +12,13 @@ void minesweeper::operate(int col, int ln, int mov)
             {
                 if (!mineBoard.at(ln).at(col))
                 {
-                    coverBoard.at(ln).at(col) = (countRoundMine(col, ln) == 0) ? (' ') : ('0' + countRoundMine(col, ln));
-                    ++opened;
-                    if (!countRoundMine(col, ln))
-                    {
-                        for (auto &&calc : sides)
-                        {
-                            int calcLn = ln + calc[0], calcCol = col + calc[1];
-                            openSides(calcCol, calcLn);
-                        }
-                    }
+                    open(col, ln);
                 }
-                else
+                else if (!opened)
                 {
-                    lose();
+                    mineBoard.at(ln).at(col) = false;
+                    generate(1);
+                    open(col, ln);
                 }
             }
             break;
@@ -84,7 +77,7 @@ bool minesweeper::isValid(int col, int ln)
 
 void minesweeper::generate(int num)
 {
-    for (int placed = 0; placed <= num; ++placed)
+    for (int placed = 0; placed < num; ++placed)
     {
         random_device rdLn;
         mt19937 mtLn(rdLn());
@@ -109,13 +102,13 @@ void minesweeper::generate(int num)
 
 void minesweeper::win()
 {
-    cout << "You WIN :)\nPress \"Enter\" to continue...";
+    cout << "You WIN :)\n";
     system("pause");
 }
 
 void minesweeper::lose()
 {
-    cout << "You LOSE :)\nPress \"Enter\" to continue...";
+    cout << "You LOSE :(\n";
     system("pause");
 }
 
@@ -139,7 +132,7 @@ void minesweeper::showBoard()
         cout << '\n';
         for (int x = 0; x < coverBoard.at(y).size(); ++x)
         {
-            cout << coverBoard.at(y).at(x) << "  ";
+            cout << mineBoard.at(y).at(x) << "  ";
         }
         cout << "| " << y << '\n';
     }
@@ -202,9 +195,23 @@ void minesweeper::init()
 
 void minesweeper::openSides(int col, int ln)
 {
-    if (isValid(col, ln))
+    if (isValid(col, ln) && coverBoard.at(ln).at(col) == '+')
     {
         coverBoard.at(ln).at(col) = (countRoundMine(col, ln) == 0) ? (' ') : ('0' + countRoundMine(col, ln));
         ++opened;
+    }
+}
+
+void minesweeper::open(int col, int ln)
+{
+    coverBoard.at(ln).at(col) = (!countRoundMine(col, ln)) ? (' ') : ('0' + countRoundMine(col, ln));
+    ++opened;
+    if (!countRoundMine(col, ln))
+    {
+        for (auto &&calc : sides)
+        {
+            int calcLn = ln + calc[0], calcCol = col + calc[1];
+            openSides(calcCol, calcLn);
+        }
     }
 }

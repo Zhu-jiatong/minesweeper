@@ -39,6 +39,7 @@ private:
     void openSides(int col, int ln);
     void lose();
     void win();
+    void open(int col, int ln);
 
 public:
     int boardCol, boardLn, mine, flags, opened{};
