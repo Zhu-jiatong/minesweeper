@@ -62,10 +62,10 @@ void minesweeper::operate(int col, int ln, int mov)
 int minesweeper::countRoundMine(int col, int ln)
 {
     int mCount{};
-    for (int i = 0; i < 8; ++i)
+    for (auto &&calc : sides)
     {
-        int checkLn = ln + sides[i][0], checkCol = col + sides[i][1];
-        if (isValid(checkCol, checkLn) && mineBoard[checkLn][checkCol])
+        int checkLn = ln + calc.at(0), checkCol = col + calc.at(1);
+        if (isValid(checkCol, checkLn) && mineBoard.at(checkLn).at(checkCol))
         {
             ++mCount;
         }
@@ -209,7 +209,7 @@ void minesweeper::open(int col, int ln)
     {
         for (auto &&calc : sides)
         {
-            int calcLn = ln + calc[0], calcCol = col + calc[1];
+            int calcLn = ln + calc.at(0), calcCol = col + calc.at(1);
             openSides(calcCol, calcLn);
         }
     }
