@@ -29,7 +29,6 @@ using namespace std;
 class minesweeper
 {
 private:
-    // array<array<bool, MAXCOL>, MAXLN> mineBoard{false};
     vector<vector<bool>> mineBoard;
     array<array<int, 2>, 8> sides{{{1, 1}, {1, 0}, {1, -1}, {0, 1}, {0, -1}, {-1, 1}, {-1, 0}, {-1, -1}}};
     void generate(int num);
@@ -43,9 +42,7 @@ private:
 
 public:
     int boardCol, boardLn, mine, flags, opened{};
-    // array<array<char, MAXCOL>, MAXLN> coverBoard{};
     vector<vector<char>> coverBoard;
-    // array<array<bool, MAXCOL>, MAXLN> opened{false};
 
     void setAttrib(int diffi);
     void init();

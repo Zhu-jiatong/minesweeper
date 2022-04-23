@@ -20,6 +20,11 @@ void minesweeper::operate(int col, int ln, int mov)
                     generate(1);
                     open(col, ln);
                 }
+                else
+                {
+                    lose();
+                }
+                
             }
             break;
 
