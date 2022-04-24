@@ -194,10 +194,33 @@ void minesweeper::init()
 
 void minesweeper::openSides(int col, int ln)
 {
-    if (isValid(col, ln) && coverBoard.at(ln).at(col) == '.')
+    ++opened;
+    coverBoard.at(ln).at(col) = (!countRoundMine(col, ln) && coverBoard.at(ln).at(col) == '.') ? (' ') : ('0' + countRoundMine(col, ln));
+    if (!countRoundMine(col, ln))
     {
-        coverBoard.at(ln).at(col) = (countRoundMine(col, ln) == 0) ? (' ') : ('0' + countRoundMine(col, ln));
-        ++opened;
+        coverBoard.at(ln).at(col) = ' ';
+        if (isValid(col - 1, ln + 1) && coverBoard.at(ln + 1).at(col - 1) == '.')
+            openSides(col - 1, ln + 1);
+        if (isValid(col - 1, ln) && coverBoard.at(ln).at(col - 1) == '.')
+            openSides(col - 1, ln);
+        if (isValid(col - 1, ln - 1) && coverBoard.at(ln - 1).at(col - 1) == '.')
+            openSides(col - 1, ln - 1);
+
+        if (isValid(col, ln - 1) && coverBoard.at(ln - 1).at(col) == '.')
+            openSides(col, ln - 1);
+        if (isValid(col, ln + 1) && coverBoard.at(ln + 1).at(col) == '.')
+            openSides(col, ln + 1);
+
+        if (isValid(col + 1, ln + 1) && coverBoard.at(ln + 1).at(col + 1) == '.')
+            openSides(col + 1, ln + 1);
+        if (isValid(col + 1, ln) && coverBoard.at(ln).at(col + 1) == '.')
+            openSides(col + 1, ln);
+        if (isValid(col + 1, ln - 1) && coverBoard.at(ln - 1).at(col + 1) == '.')
+            openSides(col + 1, ln - 1);
+    }
+    else
+    {
+        coverBoard.at(ln).at(col) = (!countRoundMine(col, ln) && coverBoard.at(ln).at(col) == '.') ? (' ') : ('0' + countRoundMine(col, ln));
     }
 }
 
@@ -207,10 +230,6 @@ void minesweeper::open(int col, int ln)
     ++opened;
     if (!countRoundMine(col, ln))
     {
-        for (auto &&calc : sides)
-        {
-            int calcLn = ln + calc.at(0), calcCol = col + calc.at(1);
-            openSides(calcCol, calcLn);
-        }
+        openSides(col, ln);
     }
 }
