@@ -2,9 +2,7 @@
 #define LIBS_h
 
 #include <iostream>
-#include <string>
 #include <chrono>
-#include <Windows.h>
 
 #include ".\minesweeper\minesweeper.h"
 

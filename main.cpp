@@ -1,5 +1,4 @@
 #include "libs\libs.h"
-#include <stdexcept>
 using namespace std;
 
 minesweeper myGame;
