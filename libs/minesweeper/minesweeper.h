@@ -19,9 +19,9 @@ enum mode
 
 enum moves
 {
+    EXIT,
     FLAG,
     OPEN,
-    AUTOS,
 };
 
 using namespace std;

@@ -41,6 +41,10 @@ void minesweeper::operate(int col, int ln, int mov)
 
             break;
 
+        case EXIT:
+            exit(0);
+            break;
+
         default:
             break;
         }
@@ -125,20 +129,27 @@ void minesweeper::showBoard()
     {
         cout << x << (x < 10 ? "   " : "  ");
     }
+    cout << "\n    ";
+    for (int x = 1; x < coverBoard.at(0).size(); ++x)
+    {
+        cout << "----";
+    }
+    cout << "-";
 
     for (int y = 0; y < coverBoard.size(); ++y)
     {
-        cout << '\n'
+        cout << "  |\n"
              << (y < 10 ? " " : "") << y << "| ";
         for (int x = 0; x < coverBoard.at(y).size(); ++x)
         {
             cout << coverBoard.at(y).at(x) << "   ";
         }
-        cout << '\n';
+        cout << "\n";
     }
 
-    cout << "mov: 0 - FLAG (" << flags << "/" << mine << ")\n"
-         << "     1 - OPEN (" << opened << "/" << boardCol * boardLn - mine << ")\n"
+    cout << "mov: 0 - EXIT\n"
+         << "     1 - FLAG (" << flags << "/" << mine << ")\n"
+         << "     2 - OPEN (" << opened << "/" << boardCol * boardLn - mine << ")\n"
          << "YOUR_MOVE (x y mov): ";
     int c, l, m;
     cin >> c >> l >> m;
