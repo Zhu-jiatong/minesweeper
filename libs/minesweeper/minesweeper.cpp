@@ -123,7 +123,7 @@ void minesweeper::showBoard()
     cout << "    ";
     for (int x = 0; x < coverBoard.at(0).size(); ++x)
     {
-        cout << x << (x < 10 ? "  " : " ");
+        cout << x << (x < 10 ? "   " : "  ");
     }
 
     for (int y = 0; y < coverBoard.size(); ++y)
@@ -132,7 +132,7 @@ void minesweeper::showBoard()
              << (y < 10 ? " " : "") << y << "| ";
         for (int x = 0; x < coverBoard.at(y).size(); ++x)
         {
-            cout << coverBoard.at(y).at(x) << "  ";
+            cout << coverBoard.at(y).at(x) << "   ";
         }
         cout << '\n';
     }
