@@ -4,7 +4,6 @@
 #include <iostream>
 #include <chrono>
 #include <array>
-#include <time.h>
 #include <random>
 #include <vector>
 
@@ -41,7 +40,7 @@ private:
     void open(int col, int ln);
 
 public:
-    int boardCol, boardLn, mine, flags, opened{};
+    int boardCol, boardLn, mine, flags{}, opened{}, loseCount{};
     vector<vector<char>> coverBoard;
 
     void setAttrib(int diffi);

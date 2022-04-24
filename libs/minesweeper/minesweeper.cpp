@@ -106,13 +106,14 @@ void minesweeper::generate(int num)
 
 void minesweeper::win()
 {
-    cout << "You WIN :)\n";
+    cout << "You WIN :)\nStats: Wrong moves: " << loseCount << '\n';
     system("pause");
 }
 
 void minesweeper::lose()
 {
-    cout << "You LOSE :(\n";
+    ++loseCount;
+    cout << "You LOSE (" << loseCount << ") :(\n";
     system("pause");
 }
 
@@ -136,8 +137,8 @@ void minesweeper::showBoard()
         cout << '\n';
     }
 
-    cout << "0 - FLAG (" << flags << "/" << mine << ")\n"
-         << "1 - OPEN (" << opened << "/" << boardCol * boardLn - mine << ")\n"
+    cout << "mov: 0 - FLAG (" << flags << "/" << mine << ")\n"
+         << "     1 - OPEN (" << opened << "/" << boardCol * boardLn - mine << ")\n"
          << "YOUR_MOVE (x y mov): ";
     int c, l, m;
     cin >> c >> l >> m;
@@ -226,10 +227,13 @@ void minesweeper::openSides(int col, int ln)
 
 void minesweeper::open(int col, int ln)
 {
-    coverBoard.at(ln).at(col) = (!countRoundMine(col, ln)) ? (' ') : ('0' + countRoundMine(col, ln));
-    ++opened;
     if (!countRoundMine(col, ln))
     {
         openSides(col, ln);
+    }
+    else
+    {
+        coverBoard.at(ln).at(col) = (!countRoundMine(col, ln)) ? (' ') : ('0' + countRoundMine(col, ln));
+        ++opened;
     }
 }
