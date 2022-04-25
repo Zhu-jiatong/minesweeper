@@ -134,17 +134,26 @@ void minesweeper::showBoard()
     {
         cout << "----";
     }
-    cout << "-";
+    cout << "--";
 
     for (int y = 0; y < coverBoard.size(); ++y)
     {
-        cout << "  |\n"
+        cout << (!y ? "" : "|") << '\n'
              << (y < 10 ? " " : "") << y << "| ";
         for (int x = 0; x < coverBoard.at(y).size(); ++x)
         {
-            cout << coverBoard.at(y).at(x) << "   ";
+            cout << coverBoard.at(y).at(x) << ((x == coverBoard.at(y).size() - 1) ? " " : "   ");
         }
-        cout << "\n";
+        cout << "|\n";
+
+        if (y != coverBoard.size() - 1)
+        {
+            cout << "  |";
+            for (int x = 0; x < coverBoard.at(y).size(); ++x)
+            {
+                cout << ((x == coverBoard.at(y).size() - 1) ? "   " : "    ");
+            }
+        }
     }
 
     cout << "mov: 0 - EXIT\n"
@@ -176,6 +185,21 @@ void minesweeper::setAttrib(int dif)
         boardLn = 16;
         boardCol = 30;
         mine = 99;
+        break;
+
+    case CUSTOM:
+    custConfig:
+        system("cls");
+        cout << "Cols: ", cin >> boardCol;
+        cout << "Lns:", cin >> boardLn;
+        cout << "Mines (Max: boardLn * boardCol - 1): ", cin >> mine;
+        if (mine >= boardLn * boardCol)
+        {
+            cout << "Too many mines (" << mine << "/" << boardLn * boardCol - 1;
+            system("pause");
+            goto custConfig;
+        }
+
         break;
 
     default:

@@ -14,7 +14,8 @@ enum mode
 {
     EASY,
     MEDIUM,
-    HARD
+    HARD,
+    CUSTOM,
 };
 
 enum moves
@@ -22,6 +23,7 @@ enum moves
     EXIT,
     FLAG,
     OPEN,
+    REFRESH,
 };
 
 using namespace std;
