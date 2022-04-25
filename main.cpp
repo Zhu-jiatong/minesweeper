@@ -7,11 +7,12 @@ int main(int argc, char const *argv[])
 {
 	while (true)
 	{
-		cout << "0 - EASY\n"
-			 << "1 - MEDIUM\n"
-			 << "2 - HARD\n"
+		system("cls");
+		cout << "0 - EASY (board: 8*8, mines: 10)\n"
+			 << "1 - MEDIUM (board: 16*16, mines: 40)\n"
+			 << "2 - HARD (board: 16*30, mines: 99)\n"
 			 << "3 - CUSTOM\n"
-			 << "GAME_MODE: ";
+			 << "Select game mode: ";
 		int gMode;
 		cin >> gMode;
 		myGame.setAttrib(gMode);

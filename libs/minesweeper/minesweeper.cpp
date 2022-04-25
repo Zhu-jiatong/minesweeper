@@ -45,6 +45,10 @@ void minesweeper::operate(int col, int ln, int mov)
             exit(0);
             break;
 
+        case REFRESH:
+            showBoard();
+            break;
+
         default:
             break;
         }
@@ -159,6 +163,7 @@ void minesweeper::showBoard()
     cout << "mov: 0 - EXIT\n"
          << "     1 - FLAG (" << flags << "/" << mine << ")\n"
          << "     2 - OPEN (" << opened << "/" << boardCol * boardLn - mine << ")\n"
+         << "     3 - REFRESH\n"
          << "YOUR_MOVE (x y mov): ";
     int c, l, m;
     cin >> c >> l >> m;
@@ -190,12 +195,15 @@ void minesweeper::setAttrib(int dif)
     case CUSTOM:
     custConfig:
         system("cls");
-        cout << "Cols: ", cin >> boardCol;
+        cout << "Custom difficulty config:\n"
+             << "IMPORTANT: Too many lines/cols may cause display issues.\n"
+             << "Cols: ",
+            cin >> boardCol;
         cout << "Lns:", cin >> boardLn;
-        cout << "Mines (Max: boardLn * boardCol - 1): ", cin >> mine;
+        cout << "Mines (Max: " << boardLn * boardCol - 1 << "): ", cin >> mine;
         if (mine >= boardLn * boardCol)
         {
-            cout << "Too many mines (" << mine << "/" << boardLn * boardCol - 1;
+            cout << "Too many mines (" << mine << "/" << boardLn * boardCol - 1 << ")\n";
             system("pause");
             goto custConfig;
         }
