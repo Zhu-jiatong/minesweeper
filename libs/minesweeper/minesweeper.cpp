@@ -133,12 +133,12 @@ void minesweeper::showBoard()
     {
         cout << x << (x < 10 ? "   " : "  ");
     }
-    cout << "\n    ";
+    cout << "\n  +-";
     for (int x = 1; x < coverBoard.at(0).size(); ++x)
     {
         cout << "----";
     }
-    cout << "--";
+    cout << "--+";
 
     for (int y = 0; y < coverBoard.size(); ++y)
     {
